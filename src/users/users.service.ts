@@ -9,6 +9,7 @@ import { LoginOutput, LoginInput } from './dto/login-user.dto';
 // import { Verification } from './entities/verification.entity';
 import { ResendService } from 'nestjs-resend';
 import { EmailToken } from './entities/emailToken.entity';
+import { JwtService } from 'src/jwt/jwt.service';
 // import { ResendService } from 'src/mail/mail.service';
 
 @Injectable()
@@ -23,6 +24,7 @@ export class UsersService {
     private readonly emailTokenrepository: Repository<EmailToken>,
     private readonly resendService: ResendService,
     private readonly dataSource: DataSource,
+    private readonly jwtServices: JwtService,
   ) { }
 
   async create(input: CreateUserInput): Promise<CreateUserOutput> {
@@ -81,7 +83,7 @@ export class UsersService {
       this.dataSource.createEntityManager()
       await this.dataSource.manager.transaction(async () => {
         Promise.all([p1, p2, p3]).then((values) => {
-          console.log(values);
+          // console.log(values);
         })
           .catch((reason) => {
             return { ok: false, msg: 'Ocurrio un error al crear el usuario' };
@@ -117,9 +119,9 @@ export class UsersService {
       // verificar el password
       const password = await existe.checkPassword(input.password);
       if (!password) return { ok: false, msg: 'Usuario o password incorrectos' };
-
-      return { ok: true, msg: `Hola ${existe.fullname}, Bienvenido nuevamente` };
-
+      const payload = { id: existe.id, name: existe.fullname };
+      const token = this.jwtServices.sign(payload);
+      return { ok: true, msg: `Hola ${existe.fullname}, Bienvenido nuevamente`, token };
     } catch (e) {
       return { ok: false, msg: 'Error on server', error: 'Error en el servidor' };
     }

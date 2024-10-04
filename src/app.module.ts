@@ -20,7 +20,7 @@ import { EmailToken } from './users/entities/emailToken.entity';
       port: 3306,
       username: 'user',
       password: '123456',
-      database: 'indriveDB',
+      database: process.env.DB_NAME,
       entities: [User, Rol, EmailToken],
       // migrationsRun: false,
       // synchronize: true,//remove for production
