@@ -20,14 +20,15 @@ export class AuthGuard implements CanActivate {
   //   return true;
   // }
   async canActivate(ctx: ExecutionContext): Promise<boolean> {
-    const roles = this.reflector.get<AllowedRoles[]>('roles', ctx.getHandler());
-    if (!roles) return true;
+    // const roles = this.reflector.get<AllowedRoles[]>('roles', ctx.getHandler());
+    // if (!roles) return true;
     try {
       // const gqlContext = GqlExecutionContext.create(context).getContext();
       const request = ctx.switchToHttp().getRequest();
-      const user = request['user'];
+      const user = request;
       // console.log(gqlContext);
-      const token = request.token || request.req.connectionParams['x-jwt'];
+      // const token = request.token || request.req.connectionParams['x-jwt'];
+      const token = request.headers['x-jwt'];
       if (token) {
         const decoded = this.jwtServices.verify(String(token));
         if (!decoded) return false;
@@ -37,7 +38,7 @@ export class AuthGuard implements CanActivate {
             userId: decoded['id']
           }
           const { user } = await this.userServices.findById(sendData);
-          // console.log(user);
+          console.log(user);
           if (!user) return false;
           request['user'] = user;
           // if (roles.includes('any')) return true;

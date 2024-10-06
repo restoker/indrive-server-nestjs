@@ -3,6 +3,9 @@ import { UsersService } from './users.service';
 import { CreateUserInput, CreateUserOutput } from './dto/create-user.dto';
 import { LoginInput, LoginOutput } from './dto/login-user.dto';
 import { ConfirmarEmailOutput } from './dto/confirmar-email.dto';
+import { UserProfileInput } from './dto/user-profile.dto';
+import { AuthUser } from 'src/auth/auth-user.decorator';
+import { User } from './entities/user.entity';
 
 @Controller('users')
 export class UsersController {
@@ -34,6 +37,18 @@ export class UsersController {
     // console.log(token);
     // return this.usersService.login(input);
     return this.usersService.confirmEmailWithToken(token);
+  }
+
+  @Get("/:userId")
+  async me(
+    @AuthUser()
+    user: User,
+    @Param('userId', new ParseUUIDPipe())
+    userId: string,
+  ) {
+    // console.log(id);
+    // console.log(user);
+    return this.usersService.findById({ userId });
   }
 
   // @Get()

@@ -12,6 +12,9 @@ export class JwtMiddleware implements NestMiddleware {
   ) { }
 
   async use(req: any, res: any, next: () => void) {
+    // const authToken = request.headers['authorization'].split(' ')[1];
+    // if ('authorization' in req.headers) {
+    // console.log(req);
     if ('x-jwt' in req.headers) {
       const token = req.headers['x-jwt'];
       try {
@@ -29,6 +32,7 @@ export class JwtMiddleware implements NestMiddleware {
           }
         }
       } catch (error) {
+        console.log(error);
       }
     }
 
