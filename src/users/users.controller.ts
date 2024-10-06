@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ParseUUIDPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ParseUUIDPipe, Put } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserInput, CreateUserOutput } from './dto/create-user.dto';
 import { LoginInput, LoginOutput } from './dto/login-user.dto';
@@ -6,6 +6,7 @@ import { ConfirmarEmailOutput } from './dto/confirmar-email.dto';
 import { UserProfileInput } from './dto/user-profile.dto';
 import { AuthUser } from 'src/auth/auth-user.decorator';
 import { User } from './entities/user.entity';
+import { UpdateUserInput, UpdateUserOutput } from './dto/update-user.dto';
 
 @Controller('users')
 export class UsersController {
@@ -51,6 +52,14 @@ export class UsersController {
     return this.usersService.findById({ userId });
   }
 
+  @Put(':id')
+  update(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() input: UpdateUserInput,
+  ): Promise<UpdateUserOutput> {
+    return this.usersService.update(id, input);
+  }
+
   // @Get()
   // findAll() {
   //   return this.usersService.findAll();
@@ -61,10 +70,6 @@ export class UsersController {
   //   return this.usersService.findOne(+id);
   // }
 
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-  //   return this.usersService.update(+id, updateUserDto);
-  // }
 
   // @Delete(':id')
   // remove(@Param('id') id: string) {

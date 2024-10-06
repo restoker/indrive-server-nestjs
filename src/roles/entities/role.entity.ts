@@ -9,7 +9,6 @@ export enum RolEnumType {
     user = "user",
 }
 
-
 @Entity()
 export class Rol extends CoreEntity {
 
@@ -25,6 +24,6 @@ export class Rol extends CoreEntity {
     @Column()
     route: string;
 
-    // @ManyToMany(() => User, (user) => user.roles)
-    // users: User[]
+    @ManyToMany(() => User, (user) => user.roles)
+    users: User[]
 }

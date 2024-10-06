@@ -11,5 +11,5 @@ export class TwoFactorToken extends CoreEntity {
     @Column()
     email: string;
     @Column()
-    userID: string;
+    userId: string;
 }

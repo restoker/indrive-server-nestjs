@@ -10,6 +10,7 @@ import { LoginOutput, LoginInput } from './dto/login-user.dto';
 import { ResendService } from 'nestjs-resend';
 import { EmailToken } from './entities/emailToken.entity';
 import { JwtService } from 'src/jwt/jwt.service';
+import { UpdateUserInput, UpdateUserOutput } from './dto/update-user.dto';
 // import { ResendService } from 'src/mail/mail.service';
 
 @Injectable()
@@ -117,6 +118,7 @@ export class UsersService {
       const existe = await this.userRepository.findOneBy({ email: input.email });
       if (!existe) return { ok: false, msg: 'Usuario o Password incorrectos' };
       // verificar el password
+      console.log(existe);
       const password = await existe.checkPassword(input.password);
       if (!password) return { ok: false, msg: 'Usuario o password incorrectos' };
       const payload = { id: existe.id, name: existe.fullname };
@@ -189,9 +191,27 @@ export class UsersService {
   //   return `This action returns a #${id} user`;
   // }
 
-  // update(id: number, updateUserDto: UpdateUserDto) {
-  //   return `This action updates a #${id} user`;
-  // }
+  async update(id: string, input: UpdateUserInput): Promise<UpdateUserOutput> {
+    if (input.id) {
+      delete input.id;
+    }
+
+    try {
+      // verificar si el usuario existe
+      const existe = await this.userRepository.findBy({ id });
+      if (!existe) return { ok: false, msg: `El usuario con el ${id} no existe` };
+
+      const updatedUser = Object.assign(existe, input);
+
+      await this.userRepository.save({
+        id,
+        ...updatedUser,
+      })
+
+    } catch (e) {
+      return { ok: false, msg: 'Error en el servidor' };
+    }
+  }
 
   // remove(id: number) {
   //   return `This action removes a #${id} user`;

@@ -4,6 +4,7 @@ import { CoreEntity } from "src/commons/entities/core.entity";
 import { BeforeInsert, BeforeUpdate, Column, Entity, JoinTable, ManyToMany } from "typeorm";
 import * as bcrypt from 'bcrypt'
 import { InternalServerErrorException } from "@nestjs/common";
+import { Rol } from "src/roles/entities/role.entity";
 
 export enum UserRole {
     client = 'client',
@@ -89,15 +90,15 @@ export class User extends CoreEntity {
         }
     }
 
-    // @ManyToMany(() => Rol, (rol) => rol.users, { cascade: true })
-    // @JoinTable({
-    //     name: 'user_has_roles',
-    //     joinColumn: {
-    //         name: 'id_user',
-    //     },
-    //     inverseJoinColumn: {
-    //         name: 'id_rol',
-    //     }
-    // })
-    // roles: Rol[]
+    @ManyToMany(() => Rol, (rol) => rol.users, { cascade: true, eager: true })
+    @JoinTable({
+        // name: 'user_has_roles',
+        // joinColumn: {
+        //     name: 'id_user',
+        // },
+        // inverseJoinColumn: {
+        //     name: 'id_rol',
+        // }
+    })
+    roles: Rol[]
 }
