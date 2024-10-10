@@ -10,6 +10,7 @@ import { ConfigModule } from '@nestjs/config';
 import { Rol } from './roles/entities/role.entity';
 import { ResendModule } from 'nestjs-resend';
 import { EmailToken } from './users/entities/emailToken.entity';
+import { FilesModule } from './files/files.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { EmailToken } from './users/entities/emailToken.entity';
     ResendModule.forRoot({
       apiKey: process.env.RESEND_API,
     }),
+    FilesModule,
   ],
   controllers: [],
   providers: [],

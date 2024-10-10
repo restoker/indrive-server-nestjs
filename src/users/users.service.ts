@@ -195,7 +195,27 @@ export class UsersService {
     if (input.id) {
       delete input.id;
     }
+    try {
+      // verificar si el usuario existe
+      const existe = await this.userRepository.findBy({ id });
+      if (!existe) return { ok: false, msg: `El usuario con el ${id} no existe` };
 
+      const updatedUser = Object.assign(existe, input);
+
+      await this.userRepository.save({
+        id,
+        ...updatedUser,
+      })
+
+    } catch (e) {
+      return { ok: false, msg: 'Error en el servidor' };
+    }
+  }
+
+  async updateWithImage(id: string, input: UpdateUserInput): Promise<UpdateUserOutput> {
+    if (input.id) {
+      delete input.id;
+    }
     try {
       // verificar si el usuario existe
       const existe = await this.userRepository.findBy({ id });
